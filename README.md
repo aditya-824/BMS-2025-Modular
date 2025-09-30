@@ -5,3 +5,6 @@ Libraries created:
 - BMS_CAN: Initialization of MCP, sending CAN data and charging function
 - BMS_FAULT_CHECKS: Error check, fault counter, fault check, voltage and temperature fault check and current fault check
 - BMS_LTC: Hex number conversion, LTC initialization and printing written and read configs
+## BMS_2025_Modular_V2
+- Moved measurementLoop to BMS_LTC
+- Created new BMS_PRINT library for all print funtions
