@@ -2,6 +2,7 @@
 
 void printStackVoltage(uint8_t total_ic, cell_asic *BMS_IC)
 {
+    float packVoltage = 0;
     const uint8_t kPrintOrder[3][6] = {
         {18, 13, 12, 7, 6, 1},
         {17, 14, 11, 8, 5, 2},
@@ -13,28 +14,22 @@ void printStackVoltage(uint8_t total_ic, cell_asic *BMS_IC)
         {
             uint8_t ic = kPrintOrder[row][col] - 1;
 
+            // Print stack number with alignment
+            Serial.print("S");
+            if (kPrintOrder[row][col] < 10)
+                Serial.print("0"); // pad single digit stack numbers
+            Serial.print(kPrintOrder[row][col]);
+            Serial.print(": ");
+
             if (ic >= total_ic)
             {
-                // Print stack number with alignment
-                Serial.print("S");
-                if (kPrintOrder[row][col] < 10)
-                    Serial.print("0"); // pad single digit stack numbers
-                Serial.print(kPrintOrder[row][col]);
-                Serial.print(": ");
-
                 // Error message
                 Serial.print("NotConn ");
             }
             else
             {
                 float voltage = BMS_IC[ic].stat.stat_codes[0] * 0.0001 * 20;
-                // Print stack number with alignment
-                Serial.print("S");
-                if (kPrintOrder[row][col] < 10)
-                    Serial.print("0"); // pad single digit stack numbers
-                Serial.print(kPrintOrder[row][col]);
-                Serial.print(": ");
-
+                packVoltage += voltage;
                 // Voltage always between 0.0000 and 25.2000, so fixed width
                 Serial.print(voltage, 4);
             }
@@ -44,6 +39,8 @@ void printStackVoltage(uint8_t total_ic, cell_asic *BMS_IC)
         }
         Serial.println();
     }
+    Serial.print("Total Pack Voltage: ");
+    Serial.println(packVoltage, 4);
 }
 
 void print(uint8_t ic, uint8_t cell, uint16_t value, bool temp = false, bool fault = false)

@@ -19,7 +19,7 @@
 #include "BMS_PRINT.h"
 /* ---------------------------------------------------------------------------------------------------------------------------------------------------------------------- */
 
-/* User Defines */
+/* Macros */
 #define TOTAL_IC 18               // Total number of ICs/Total number of stacks
 #define TOTAL_CELL 6              // Total number of cells per stack => Used for reading voltage values
 #define TEMPS 4                   // Total number of cells per stack => Used for reading temperature values
@@ -31,9 +31,8 @@
 #define cartId_pin 9
 #define chargerAux_pin 6
 /* ---------------------------------------------------------------------------------------------------------------------------------------------------------------------- */
+
 /* Global Variables */
-/* ---------------------------------------------------------------------------------------------------------------------------------------------------------------------- */
-/* User Variables */
 
 // Booleans
 bool voltfaultStatus[TOTAL_IC][TOTAL_CELL];  // Fault status variable => Will trigger AMS Fault
@@ -57,10 +56,11 @@ const int period = 200;         // To calculate SoC every 200ms
 const float analogResolution = 5.0 / 1023.0;
 
 // Variables
-float vsBat = 0;  // Variables for lvData
+float vsBat = 0;      // Variables for lvData
 uint16_t vsHVin = 0;  // Changed these two from float to uint16_t;
 /* ---------------------------------------------------------------------------------------------------------------------------------------------------------------------- */
-/* User Defined Arrays */
+
+/* Arrays */
 // Readings
 uint32_t cellVoltage[TOTAL_IC][TOTAL_CELL];                     // Array to hold voltage values for each cell
 uint32_t cellTemperature[TOTAL_IC][TEMPS];                      // Array to hold temperature values for each cell
@@ -70,9 +70,11 @@ uint16_t allData[TOTAL_IC * (TEMPS + TOTAL_CELL) + 4] = { 0 };  // Array to hold
 uint16_t volt_faultCounter[TOTAL_IC][TOTAL_CELL] = { 0 };  // Array to hold voltage fault count for each cell
 uint16_t temps_faultCounter[TOTAL_IC][TEMPS] = { 0 };      // Array to hold temperature fault count for each cell
 /* ---------------------------------------------------------------------------------------------------------------------------------------------------------------------- */
+
 /* Struct initialization */
 cell_asic BMS_IC[TOTAL_IC];  // Initializing main struct to hold cell voltage, temperature values and stack voltage value.
 /* ---------------------------------------------------------------------------------------------------------------------------------------------------------------------- */
+
 /* Configuration bit setup */
 bool REFON = true;                                       // Reference Powered Up Bit
 bool ADCOPT = false;                                     // ADC Mode option bit
@@ -83,10 +85,12 @@ bool dccBits_a[12] = { false, false, false, false,
 bool dctoBits[4] = { false, false, false, false };    // Discharge time value => Dcto {0,1,2,3}. Programed for 4 min
 /* !!Ensure that Dcto bits are set according to the required discharge time. Refer to the data sheet!! */
 /* ---------------------------------------------------------------------------------------------------------------------------------------------------------------------- */
-// User Defined Functions
+
+/* User Defined Functions */
 void BMSData(void);
 void AvgBMSData(void);
 void faultCounter(uint16_t, uint16_t, bool, uint8_t, uint8_t);
+
 /* ---------------------------------------------------------------------------------------------------------------------------------------------------------------------- */
 void setup() {
   Serial.begin(115200);  // Setting baud rate for Serial Monitor
@@ -130,7 +134,7 @@ void loop() {
       bool voltageFault = voltage_faultCheck(TOTAL_IC, TOTAL_CELL, volt_faultCounter, voltfaultStatus);
       bool tempFault = temperature_faultCheck(TOTAL_IC, TEMPS, temps_faultCounter, tempfaultStatus, BMS_IC);
       bool csFault = csFault_check();
-      if (voltageFault == true || tempFault == true || csFault == true) {
+      if (voltageFault == true || tempFault == true) {
         digitalWrite(AMS_FAULT_SDC, LOW);
       } else {
         digitalWrite(AMS_FAULT_SDC, HIGH);
