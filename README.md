@@ -8,3 +8,7 @@ Libraries created:
 ## BMS_2025_Modular_V2
 - Moved measurementLoop to BMS_LTC
 - Created new BMS_PRINT library for all print funtions
+## BMS_2025_Modular_V3
+- GUI mode toggle to swtich between full serial output and live GUI output
+- All serial prints modified to fit one final GUI input string
+- Barebones Debug Mode toggle to disable 'print write config' and 'print read config' functions for GUI
