@@ -1,10 +1,17 @@
 #include "BMS_FAULT_CHECKS.h"
 
-void check_error(int error)
+void check_error(int error, bool gui)
 {
     if (error == -1)
     {
-        Serial.println(F("A PEC error was detected in the received data"));
+        if (gui)
+        {
+            Serial.print("PECError, ");
+        }
+        else
+        {
+            Serial.println(F("A PEC error was detected in the received data"));
+        }
     }
 }
 
@@ -48,6 +55,10 @@ bool temperature_faultCheck(uint8_t total_ic, uint8_t temps, uint16_t temps_faul
                     Serial.println("NTC DISCONNECTED");
                 }
                 return true;
+
+                if (gui)
+                {
+                }
             }
             else
             {
@@ -61,14 +72,22 @@ bool temperature_faultCheck(uint8_t total_ic, uint8_t temps, uint16_t temps_faul
 
 bool csFault_check(bool gui)
 {
-    double currentSensor;               // Variable to store current sensor reading
+    double currentSensor;             // Variable to store current sensor reading
     const double kCsFaultVal = 10.00; // Variable for current sensor fault check => Change based on CS testing.
 
     currentSensor = readCurrent();
-    Serial.print("Current sensor value:");
-    Serial.print(currentSensor);
-    Serial.print(" Amps.");
-    Serial.println();
+    if (gui)
+    {
+        Serial.print(currentSensor);
+        Serial.print(", ");
+    }
+    else
+    {
+        Serial.print("Current sensor value:");
+        Serial.print(currentSensor);
+        Serial.print(" Amps.");
+        Serial.println();
+    }
     if (currentSensor > kCsFaultVal || currentSensor < -400)
     {
         digitalWrite(progLED3, HIGH);
@@ -78,6 +97,10 @@ bool csFault_check(bool gui)
             Serial.println("----------------------------------------------------------------------------------------------------------------------------------------------------------");
         }
         return true;
+
+        if (gui)
+        {
+        }
     }
     else
     {
@@ -86,7 +109,7 @@ bool csFault_check(bool gui)
     }
 }
 
-float lvData()
+float lvData(bool gui)
 {
     const float kAnalogResolution = 5.0 / 1023.0;
     float pcr_done = 0, air_p = 0, air_n = 0, pcr_5v = 0, vs_bat = 0, v_check = 0, t_check = 0, ams_fault_out = 0, k2 = 0, k1 = 0, ss_final = 0, green_in = 0, green_out = 0, aux_p = 0, aux_n = 0, pcr_aux_in = 0;
@@ -123,46 +146,85 @@ float lvData()
         digitalWrite(VCHECK, HIGH);
     }
 
-    Serial.print("AIR +ve: ");
-    Serial.print(air_p);
-    Serial.print(" || AUX +ve: ");
-    Serial.print(aux_p);
-    Serial.print(" || AIR -ve: ");
-    Serial.print(air_n);
-    Serial.print(" || AUX -ve: ");
-    Serial.print(aux_n);
-    Serial.print(" || PCR: ");
-    Serial.print(pcr_5v);
-    Serial.print(" || PCR AUX: ");
-    Serial.print(pcr_aux_in);
-    Serial.print(" || vs_bat: ");
-    Serial.print(vs_bat);
-    Serial.println();
+    if (gui)
+    {
+        Serial.print(air_p);
+        Serial.print(", ");
+        Serial.print(aux_p);
+        Serial.print(", ");
+        Serial.print(aux_p);
+        Serial.print(", ");
+        Serial.print(aux_n);
+        Serial.print(", ");
+        Serial.print(pcr_5v);
+        Serial.print(", ");
+        Serial.print(pcr_aux_in);
+        Serial.print(", ");
+        Serial.print(vs_bat);
+        Serial.print(", ");
+        Serial.print(ss_final);
+        Serial.print(", ");
+        Serial.print(green_in);
+        Serial.print(", ");
+        Serial.print(green_out);
+        Serial.print(", ");
+        Serial.print(vs_bat_voltage);
+        Serial.print(", ");
+        Serial.print(vs_hv_voltage);
+        Serial.print(", ");
+        Serial.print(pcr_done);
+        Serial.print(", ");
+        Serial.print(v_check);
+        Serial.print(", ");
+        Serial.print(t_check);
+        Serial.print(", ");
+        Serial.print(k2);
+        Serial.print(", ");
+        Serial.print(k1);
+    }
+    else
+    {
+        Serial.print("AIR +ve: ");
+        Serial.print(air_p);
+        Serial.print(" || AUX +ve: ");
+        Serial.print(aux_p);
+        Serial.print(" || AIR -ve: ");
+        Serial.print(aux_p);
+        Serial.print(" || AUX -ve: ");
+        Serial.print(aux_n);
+        Serial.print(" || PCR: ");
+        Serial.print(pcr_5v);
+        Serial.print(" || PCR AUX: ");
+        Serial.print(pcr_aux_in);
+        Serial.print(" || vs_bat: ");
+        Serial.print(vs_bat);
+        Serial.println();
 
-    Serial.print("ss_final: ");
-    Serial.print(ss_final);
-    Serial.print(" || green_in: ");
-    Serial.print(green_in);
-    Serial.print(" || green_out: ");
-    Serial.print(green_out);
-    Serial.print(" || vs_bat_in: ");
-    Serial.print(vs_bat_voltage);
-    Serial.print(" || vs_hv_in: ");
-    Serial.print(vs_hv_voltage);
-    Serial.println();
+        Serial.print("ss_final: ");
+        Serial.print(ss_final);
+        Serial.print(" || green_in: ");
+        Serial.print(green_in);
+        Serial.print(" || green_out: ");
+        Serial.print(green_out);
+        Serial.print(" || vs_bat_in: ");
+        Serial.print(vs_bat_voltage);
+        Serial.print(" || vs_hv_in: ");
+        Serial.print(vs_hv_voltage);
+        Serial.println();
 
-    Serial.print("pcr_done: ");
-    Serial.print(pcr_done);
-    Serial.print(" || Vcheck: ");
-    Serial.print(v_check);
-    Serial.print(" || t_check: ");
-    Serial.print(t_check);
-    Serial.print(" || K2: ");
-    Serial.print(k2);
-    Serial.print(" || K1: ");
-    Serial.print(k1);
-    Serial.println();
-    Serial.println("----------------------------------------------------------------------------------------------------------------------------------------------------------");
+        Serial.print("pcr_done: ");
+        Serial.print(pcr_done);
+        Serial.print(" || Vcheck: ");
+        Serial.print(v_check);
+        Serial.print(" || t_check: ");
+        Serial.print(t_check);
+        Serial.print(" || K2: ");
+        Serial.print(k2);
+        Serial.print(" || K1: ");
+        Serial.print(k1);
+        Serial.println();
+        Serial.println("----------------------------------------------------------------------------------------------------------------------------------------------------------");
+    }
 
     return vs_bat;
 }

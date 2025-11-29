@@ -73,7 +73,7 @@ void print_rxconfig(cell_asic *bms_ic, uint8_t total_ic)
     }
 }
 
-void measurementLoop(uint8_t TOTAL_IC, cell_asic *BMS_IC)
+void measurementLoop(uint8_t TOTAL_IC, cell_asic *BMS_IC, bool gui)
 {
     int8_t error;
 
@@ -82,19 +82,19 @@ void measurementLoop(uint8_t TOTAL_IC, cell_asic *BMS_IC)
     LTC6811_pollAdc();
     wakeup_idle(TOTAL_IC);
     error = LTC6811_rdcv(SEL_ALL_REG, TOTAL_IC, BMS_IC);
-    check_error(error);
+    check_error(error, gui);
 
     wakeup_idle(TOTAL_IC);
     LTC6811_adax(SEL_ALL_REG, AUX_CH_TO_CONVERT);
     LTC6811_pollAdc();
     wakeup_idle(TOTAL_IC);
     error = LTC6811_rdaux(SEL_ALL_REG, TOTAL_IC, BMS_IC);
-    check_error(error);
+    check_error(error, gui);
 
     wakeup_idle(TOTAL_IC);
     LTC6811_adstat(SEL_ALL_REG, STAT_CH_TO_CONVERT);
     LTC6811_pollAdc();
     wakeup_idle(TOTAL_IC);
     error = LTC6811_rdstat(SEL_ALL_REG, TOTAL_IC, BMS_IC);
-    check_error(error);
+    check_error(error, gui);
 }

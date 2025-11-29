@@ -6,7 +6,10 @@ mcp2518fd CAN(CCS); // CAN object for MCP2518FD
 
 void initializeMCP(bool gui)
 {
-    Serial.println("CAN Initializing....");
+    if (!gui)
+    {
+        Serial.println("CAN Initializing....");
+    }
 
     CAN.setMode(CAN_CLASSIC_MODE);
 
