@@ -75,7 +75,7 @@ bool canSend(cell_asic *bms_ic, uint8_t total_ic, uint8_t total_cell, uint8_t to
     }
 }
 
-bool charging()
+void charging()
 {
     unsigned char BMSA[8] = {0x11, 0xB8, 0x00, 0x64, 0x00, 0x00, 0xFF, 0xFF}; // Byte 0 and 1 -> Max TS Voltage. Byte 2 and 3 -> Max Charging current.
                                                                               // Byte 4 and 5 -> Charger related settings. Byte 6 and 7 -> Retain.
@@ -83,15 +83,16 @@ bool charging()
     uint32_t buf2[8];
     buf2[2] << 8;
     CAN.sendMsgBuf(0x1806E5F4, 1, 8, BMSA);
-    uint16_t chargerCANrx = CAN.getCanId();
-    if (chargerCANrx == 0x18FF50E5)
-    {
-        charger_status = true;
-    }
-    else
-    {
-        charger_status = false;
-    }
+    Serial.println("Charging CAN Sent");
+    // uint16_t chargerCANrx = CAN.getCanId();
+    // if (chargerCANrx == 0x18FF50E5)
+    // {
+    //     charger_status = true;
+    // }
+    // else
+    // {
+    //     charger_status = false;
+    // }
 
-    return charger_status;
+    // return charger_status;
 }

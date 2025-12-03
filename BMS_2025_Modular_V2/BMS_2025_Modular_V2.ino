@@ -23,7 +23,7 @@
 #define TOTAL_IC 18               // Total number of ICs/Total number of stacks
 #define TOTAL_CELL 6              // Total number of cells per stack => Used for reading voltage values
 #define TEMPS 4                   // Total number of cells per stack => Used for reading temperature values
-#define UV 30000                  // Under voltage limit
+#define UV 27000                  // Under voltage limit
 #define OV 41000                  // Over voltage limit
 #define UT 1000                   // Under temperature limit
 #define OT 4500                   // Over temperature limit
@@ -122,13 +122,14 @@ void loop() {
   if (millis() - next_loopTime >= MEASUREMENT_LOOP_TIME) {
     measurementLoop(TOTAL_IC, BMS_IC);
     BMSData();
-    if (cartId == 1) {
-      if (chargerAux == 1) {
-        chargerCAN_status = charging();
-      } else {
-        Serial.println("Not Charging");
-      }
-    }
+    // if (cartId == 1) {
+    //   if (chargerAux == 1) {
+    //     // chargerCAN_status = charging();
+        charging();
+    //   } else {
+    //     Serial.println("Not Charging");
+    //   }
+    // }
     mainLoopCounter += 1;
     if (mainLoopCounter >= 10) {
       bool voltageFault = voltage_faultCheck(TOTAL_IC, TOTAL_CELL, volt_faultCounter, voltfaultStatus);
