@@ -82,6 +82,7 @@ void charging()
     bool charger_status;
     uint32_t buf2[8];
     buf2[2] << 8;
+    // CAN.sendMsgBuf(0x1806E5F4, 1, 8, BMSA);
     CAN.sendMsgBuf(0x1806E5F4, 1, 8, BMSA);
     Serial.println("Charging CAN Sent");
     // uint16_t chargerCANrx = CAN.getCanId();

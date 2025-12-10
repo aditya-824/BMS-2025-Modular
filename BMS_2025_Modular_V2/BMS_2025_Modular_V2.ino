@@ -24,7 +24,7 @@
 #define TOTAL_CELL 6              // Total number of cells per stack => Used for reading voltage values
 #define TEMPS 4                   // Total number of cells per stack => Used for reading temperature values
 #define UV 27000                  // Under voltage limit
-#define OV 41000                  // Over voltage limit
+#define OV 42000                  // Over voltage limit
 #define UT 1000                   // Under temperature limit
 #define OT 4500                   // Over temperature limit
 #define MEASUREMENT_LOOP_TIME 20  // Sampling period per iteration for mainLoop()
@@ -122,20 +122,19 @@ void loop() {
   if (millis() - next_loopTime >= MEASUREMENT_LOOP_TIME) {
     measurementLoop(TOTAL_IC, BMS_IC);
     BMSData();
-    // if (cartId == 1) {
-    //   if (chargerAux == 1) {
-    //     // chargerCAN_status = charging();
+    if (cartId == 1) {
+      if (chargerAux == 1) {
         charging();
-    //   } else {
-    //     Serial.println("Not Charging");
-    //   }
-    // }
+      } else {
+        Serial.println("CHARGER: Not charging");
+      }
+    }
     mainLoopCounter += 1;
     if (mainLoopCounter >= 10) {
       bool voltageFault = voltage_faultCheck(TOTAL_IC, TOTAL_CELL, volt_faultCounter, voltfaultStatus);
       bool tempFault = temperature_faultCheck(TOTAL_IC, TEMPS, temps_faultCounter, tempfaultStatus, BMS_IC);
       bool csFault = csFault_check();
-      if (voltageFault == true || tempFault == true) {
+      if (voltageFault == true || tempFault == true || csFault == true) {
         digitalWrite(AMS_FAULT_SDC, LOW);
       } else {
         digitalWrite(AMS_FAULT_SDC, HIGH);
@@ -146,12 +145,12 @@ void loop() {
       minmaxCT(BMS_IC, TOTAL_IC, TEMPS);
       uint16_t currentReading = analogRead(CSOUT);
       if (canSend(BMS_IC, TOTAL_IC, TOTAL_CELL, TEMPS, allData, vsHVin, vsBat, soc, currentReading) == true) {
-        Serial.println("DATA SENT SUCCESSFULLY");
+        Serial.println("CAN: Data sent successfully.");
       }
       if (chargerCAN_status == true) {
-        Serial.println("Recieved Correct CAN ID from charger.");
+        Serial.println("CHARGER: Recieved correct CAN ID from charger.");
       } else {
-        Serial.println("(CHARGER): No CAN id message recieved");
+        Serial.println("CHARGER: No CAN ID message recieved.");
       }
       Serial.println("----------------------------------------------------------------------------------------------------------------------------------------------------------");
       vsBat = lvData();

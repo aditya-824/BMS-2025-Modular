@@ -62,7 +62,7 @@ bool temperature_faultCheck(uint8_t total_ic, uint8_t temps, uint16_t temps_faul
 bool csFault_check()
 {
     double currentSensor;               // Variable to store current sensor reading
-    const double kCsFaultVal = 10.00; // Variable for current sensor fault check => Change based on CS testing.
+    const double kCsFaultVal = 90.00; // Variable for current sensor fault check => Change based on CS testing.
 
     currentSensor = readCurrent();
     Serial.print("Current sensor value:");
